@@ -1,149 +1,143 @@
 import logo from './logo.svg';
 import React from 'react';
 import './App.css';
-import axios from 'axios';
 import { useState, useEffect } from 'react';
+import NavBar from "./Navbar";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Blogs from "./pages/Blogs";
+import { Link, Route, Routes } from "react-router-dom";
+
+import { BrowserRouter as Router, Switch } from "react-router-dom";
 
 function App() {
-  const [address, setAddress] = useState('');
-  const [error, setError] = useState('');
+  
+  const [address, setAddress] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [nftData, setNftData] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  
-  
+  const [searchTerm, setSearchTerm] = useState("");
+
   async function requestAccount() {
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      // Check if MetaMask extension exists
       if (window.ethereum) {
-        console.log('Metamask Detected');
-
+        console.log("Metamask Detected");
         const accounts = await window.ethereum.request({
-          method: 'eth_requestAccounts',
+          method: "eth_requestAccounts",
         });
         setAddress(accounts[0]);
       } else {
-        console.log('Metamask Not Detected');
+        console.log("Metamask Not Detected");
       }
     } catch (e) {
       console.log(e);
-      setError('An error occurred while connecting.');
+      setError("An error occurred while connecting.");
     }
 
     setLoading(false);
   }
 
-   // Function to handle the search bar input change
-   const handleInputChange = (event) => {
+  const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  // Function to handle the NFT search
-  const searchNft = async () => {
+  async function searchNft() {
+    
     if (!searchTerm) {
-      setError('Please enter a search term');
+      setError("Please enter a search term");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      //opensea API
-    
-    var openSeaHeaders = new Headers();
-    openSeaHeaders.append('X-API-KEY', '36bcfeb8b7b848dd9eec125683d47078');
+      const openSeaHeaders = new Headers();
+      openSeaHeaders.append("X-API-KEY", "36bcfeb8b7b848dd9eec125683d47078");
 
-    var openSeaRequestOptions = {
-      method: 'GET',
-      headers: openSeaHeaders,
-      redirect: 'follow',
-    };
+      const openSeaRequestOptions = {
+        method: "GET",
+        headers: openSeaHeaders,
+        redirect: "follow",
+      };
 
-    const openSeaResponse = await fetch(
-      `https://api.opensea.io/v2/orders/ethereum/seaport/listings?order_by=created_date&order_direction=desc`,
-      openSeaRequestOptions
-    );
+      const openSeaResponse = await fetch(
+        `https://api.opensea.io/v2/collection/${searchTerm}/nfts?limit=50`,
+        openSeaRequestOptions
+      );
 
-    const openSeaData = await openSeaResponse.json();
-    console.log('OpenSea Data:', openSeaData);
+      const openSeaData = await openSeaResponse.json();
 
+      console.log("OpenSea Data:", openSeaData);
 
-       // Magic Eden API
-    const magicEdenUrl = 'https://api-mainnet.magiceden.dev/v2/collections/symbol/listings';
-    const magicEdenOptions = {
-      method: 'GET',
-      headers: { accept: 'application/json' },
-    };
+      setNftData(openSeaData);
+    } catch (error) {
+      console.error(error);
+      setError("An error occurred while fetching NFT data");
+    }
 
-    const magicEdenResponse = await fetch(magicEdenUrl, magicEdenOptions);
-    const magicEdenData = await magicEdenResponse.json();
-    console.log('Magic Eden Data:', magicEdenData);
-
-    // CoinGecko NFT API
-    const coingeckoUrl = 'https://api.coingecko.com/api/v3/nfts/list';
-    const coingeckoResponse = await axios.get(coingeckoUrl);
-    const coingeckoData = coingeckoResponse.data;
-    console.log('CoinGecko Data:', coingeckoData);
-
-    // Store the fetched NFT data in the state
-    setNftData({ openSeaData, magicEdenData });
-
-  } catch (error) {
-    setError('An error occurred while fetching NFT data');
+    setLoading(false);
   }
 
-  setLoading(false);
-};
-
-
   useEffect(() => {
-    requestAccount(); // Connect to MetaMask when the component mounts
-  }, []); // Empty dependency array to run the effect only once
+    requestAccount();
+  }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <button onClick={requestAccount} disabled={loading}>
-          Connect
-        </button>
-        {loading && <p>Loading...</p>}
-        {error && <p>Error: {error}</p>}
-        {address && <h3>Wallet Address: {address}</h3>}
-
-        {/* Search Bar */}
-        <div>
-          <input
-            type="text"
-            placeholder="Enter search term"
-            value={searchTerm}
-            onChange={handleInputChange}
-          />
-          <button onClick={searchNft} disabled={loading}>
-            Search NFT
+    <Router>
+      <NavBar />
+      <Routes>
+        <Route exact path="/Blogs" element={<Blogs />}></Route>
+        <Route exact path="/About" element={<About />}></Route>
+        <Route exact path="/Contact" element={<Contact />}></Route>
+      </Routes>
+      <div className="App">
+        <header className="App-header">
+          <button onClick={requestAccount} disabled={loading}>
+            Connect
           </button>
-        </div>
-
-        {/* Display NFT Data */}
-        {nftData.length > 0 && (
+          {loading && <p>Loading...</p>}
+          {error && <p>Error: {error}</p>}
+          {address && <h3>Wallet Address: {address}</h3>}
           <div>
-            <h2>Search Results</h2>
-            <div className="NftGrid">
-              {nftData.map((nft, index) => (
-                <div className="NftItem" key={index}>
-                  <img src={nft.image_url} alt={nft.name} />
-                </div>
-              ))}
-            </div>
+            <input
+              type="text"
+              placeholder="Enter search term"
+              value={searchTerm}
+              onChange={handleInputChange}
+            />
+            <button onClick={searchNft} disabled={loading}>
+              Search NFT
+            </button>
           </div>
-        )}
-
-      </header>
-    </div>
+          {nftData && (
+            <div>
+              <h2>Search Results</h2>
+              {nftData.nfts && nftData.nfts.length > 0 ? (
+                <div>
+                  {nftData.nfts.map((nft) => (
+                    <div key={nft.token_id}>
+                      <h3>NFT Details</h3>
+                      <p>NFT Name: {nft.name}</p>
+                      <p>Token Floor Price: {nft.floor_price}</p>
+                      <p>Token Standard: {nft.token_standard}</p>
+                      <img src={nft.image_url} alt={nft.name} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>No NFTs found</p>
+              )}
+            </div>
+          )}
+        </header>
+      </div>
+    </Router>
   );
+  
 }
 
 export default App;
