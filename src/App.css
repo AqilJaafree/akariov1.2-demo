@@ -28,11 +28,23 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+button {
+  font-size: 1.5rem;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  background-color: bisque;
+  color: brown;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button:hover {
+  background-color: #ffa07a;
 }
