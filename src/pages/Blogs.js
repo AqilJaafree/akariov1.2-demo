@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-function Blogs() {
+const Blogs = () => {
   const apiKey = "50a5acbeefe44f50bda54eee509fbdaa"; // Replace with your News API key
   const [articles, setArticles] = useState([]);
 
@@ -41,6 +41,6 @@ function Blogs() {
       ))}
     </div>
   );
-}
+};
 
 export default Blogs;

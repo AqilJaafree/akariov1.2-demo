@@ -49,3 +49,60 @@
   .nav li:hover {
     background-color: #777;
   }
+
+  /* Styling for the NFT listings container */
+.nft-listings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Styling for the NFT container (grid layout) */
+.nft-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4-column grid layout */
+  gap: 20px; /* Gap between NFT items */
+}
+
+/* Styling for each NFT item */
+.nft-item {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Styling for NFT images */
+.nft-item img {
+  width: 100%; /* Adjust the width of the images */
+  height: auto; /* Maintain aspect ratio */
+}
+
+/* Styling for NFT names and details */
+.nft-item h4, .nft-item p {
+  font-size: 14px; /* Adjust the font size as needed */
+  margin: 8px 0;
+}
+
+.about-container {
+  padding: 20px;
+}
+
+.nft-item {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+}
+
+.nft-asset {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nft-image {
+  width: 80px;
+  height: auto;
+  margin-top: 10px;
+}
+

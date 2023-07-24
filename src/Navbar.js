@@ -1,28 +1,27 @@
 import React from "react";
+import { Link, Route, Routes, Router } from "react-router-dom";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Blogs from "./pages/Blogs";
-import { Link, Route, Routes } from "react-router-dom";
+import Details from "./Details";
 
 export default function NavBar() {
   return (
     <nav className="nav">
-      <a href="/" className="site-name">
+      <Link to="/" className="site-name">
         Akario
-      </a>
+      </Link>
       <ul>
         <li>
-          <a href="/Blogs">Blogs</a>
+          <Link to="/Blogs">Blogs</Link>
         </li>
         <li>
-          <a href="/About">Listings</a>
+          <Link to="/About">Listings</Link>
         </li>
         <li>
-          <a href="/Contact">Contact</a>
+          <Link to="/Contact">Contact</Link>
         </li>
-       
       </ul>
     </nav>
   );
 }
-
